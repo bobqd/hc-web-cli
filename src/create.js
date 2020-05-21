@@ -67,10 +67,12 @@ let create = async (ProjectName) => {
                         case 'Vant':
                             answer.dependencies['vant'] = "^2.8.0";
                             answer.dependencies['lib-flexible'] = "^0.3.0";
+                            answer.dependencies['postcss-px2rem'] = "^0.3.0";
                             break;
                         case 'Minui':
                             answer.dependencies['mint-ui'] = "^7.0.0";
                             answer.dependencies['lib-flexible'] = "^0.3.0";
+                            answer.dependencies['postcss-px2rem'] = "^0.3.0";
                             break;
                         default:
                             break;
@@ -90,22 +92,29 @@ let create = async (ProjectName) => {
                         console.log(symbol.success, chalk.green('配置已完成，cd到项目目录，执行npm install'));
                     })
 
-                    //如果选择移动端，需要修改main.js中引入lib-flexible
+                    //如果选择移动端，需要修改main.js中引入lib-flexible,添加px2rem配置
                     if(answer.client == 'Mobile'){
-                        fs.open(`${ProjectName}/src/main.js`, 'a', function (err, fd) {
-                            if(err) {
-                                console.log('读取文件main.JS失败');
-                            } else {
-                                var buffer = Buffer.from("import 'lib-flexible/flexible.js'");
-                                fs.write(fd, buffer, function (err, written, buffer) {
-                                    if(err) {
-                                        console.log('写入文件失败');
-                                    } else {
-
-                                    }
-                                });
-                            }
-                        })
+                        if(fs.existsSync(`${ProjectName}/src/main.js`)){
+                            const data = fs.readFileSync(`${ProjectName}/src/main.js`, 'utf8').split('\n')
+                            data.splice(0, 0, "import 'lib-flexible/flexible.js'")
+                            fs.writeFileSync(`${ProjectName}/src/main.js`, data.join('\n'), 'utf8')
+                        }
+                        if(fs.existsSync(`${ProjectName}/vue.config.js`)){
+                            const vueConfig = fs.readFileSync(`${ProjectName}/vue.config.js`, 'utf8').split('\n'),
+                                  px2rem='  css: {\n'
+                                        +'    loaderOptions: {\n'
+                                        +'      postcss: {\n'
+                                        +'        plugins: [\n'
+                                        +'          require("postcss-px2rem")({\n'
+                                        +'            remUnit: 75\n'
+                                        +'          })\n'
+                                        +'        ]\n'
+                                        +'      }\n'
+                                        +'    }\n'
+                                        +'  },';
+                            vueConfig.splice(1, 0, px2rem)
+                            fs.writeFileSync(`${ProjectName}/vue.config.js`, vueConfig.join('\n'), 'utf8')
+                        }
                     }
 
                 }, () => {
