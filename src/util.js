@@ -35,7 +35,7 @@ let promptList = [
         message: 'Please choose the UI library name: ',
         choices: ['ElementUI', 'iView'],
         when: function(answers) {
-            return answers.client == 'PC'
+            return answers.client == 'PC' && answers.frame =='vue'
         }
     },
     {
@@ -44,7 +44,25 @@ let promptList = [
         message: 'Please choose the UI library name: ',
         choices: ['Vant', 'Minui'],
         when: function(answers) {
-            return answers.client == 'Mobile'
+            return answers.client == 'Mobile' && answers.frame =='vue'
+        }
+    },
+    {
+        type: 'list',
+        name: 'library',
+        message: 'Please choose the UI library name: ',
+        choices: ['amaze-ui', 'ant-design'],
+        when: function(answers) {
+            return answers.client == 'PC' && answers.frame =='react'
+        }
+    },
+    {
+        type: 'list',
+        name: 'library',
+        message: 'Please choose the UI library name: ',
+        choices: ['amaze-ui-touch', 'ant-design-mobile'],
+        when: function(answers) {
+            return answers.client == 'Mobile' && answers.frame =='react'
         }
     },
     {
