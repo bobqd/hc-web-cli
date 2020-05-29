@@ -40,7 +40,11 @@ let create = async ProjectName => {
                 let Api = '';
                 switch (answer.frame) {
                     case 'vue':
-                        Api = 'direct:https://github.com/bobqd/vue-temlate.git';
+                        if (answer.single == 'yes') {
+                            Api = 'direct:https://github.com/bobqd/vue-temlate.git';
+                        } else {
+                            Api = 'direct:https://github.com/bobqd/vue-multiple-temlate.git';
+                        }
                         break;
                     case 'react':
                         Api = 'direct:https://github.com/bobqd/react-template.git';
@@ -97,11 +101,21 @@ let create = async ProjectName => {
                                 const data = _fs2.default.readFileSync(`${ProjectName}/src/main.js`, 'utf8').split('\n');
                                 data.splice(0, 0, "import 'lib-flexible/flexible.js'");
                                 _fs2.default.writeFileSync(`${ProjectName}/src/main.js`, data.join('\n'), 'utf8');
+                            } else {
+                                const files = _fs2.default.readdirSync(`${ProjectName}/src/pages`);
+                                files.forEach(function (item, index) {
+                                    let stat = _fs2.default.lstatSync(`${ProjectName}/src/pages/` + item);
+                                    if (stat.isDirectory() === true) {
+                                        const data = _fs2.default.readFileSync(`${ProjectName}/src/pages/${item}/index.js`, 'utf8').split('\n');
+                                        data.splice(0, 0, "import 'lib-flexible/flexible.js'");
+                                        _fs2.default.writeFileSync(`${ProjectName}/src/pages/${item}/index.js`, data.join('\n'), 'utf8');
+                                    }
+                                });
                             }
                             if (_fs2.default.existsSync(`${ProjectName}/vue.config.js`)) {
                                 const vueConfig = _fs2.default.readFileSync(`${ProjectName}/vue.config.js`, 'utf8').split('\n'),
                                       px2rem = '  css: {\n' + '    loaderOptions: {\n' + '      postcss: {\n' + '        plugins: [\n' + '          require("postcss-px2rem")({\n' + '            remUnit: 75\n' + '          })\n' + '        ]\n' + '      }\n' + '    }\n' + '  },';
-                                vueConfig.splice(1, 0, px2rem);
+                                vueConfig.splice(answer.single == 'yes' ? 1 : 26, 0, px2rem);
                                 _fs2.default.writeFileSync(`${ProjectName}/vue.config.js`, vueConfig.join('\n'), 'utf8');
                             }
                         }

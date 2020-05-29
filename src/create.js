@@ -31,7 +31,11 @@ let create = async (ProjectName) => {
                 let Api = '';
                 switch (answer.frame) {
                     case 'vue':
-                        Api = 'direct:https://github.com/bobqd/vue-temlate.git';
+                        if(answer.single == 'yes'){
+                            Api = 'direct:https://github.com/bobqd/vue-temlate.git';
+                        }else{
+                            Api = 'direct:https://github.com/bobqd/vue-multiple-temlate.git';
+                        }
                         break;
                     case 'react':
                         Api = 'direct:https://github.com/bobqd/react-template.git';
@@ -90,6 +94,16 @@ let create = async (ProjectName) => {
                                 const data = fs.readFileSync(`${ProjectName}/src/main.js`, 'utf8').split('\n')
                                 data.splice(0, 0, "import 'lib-flexible/flexible.js'")
                                 fs.writeFileSync(`${ProjectName}/src/main.js`, data.join('\n'), 'utf8')
+                            }else{
+                                const files = fs.readdirSync(`${ProjectName}/src/pages`);
+                                files.forEach(function (item, index) {
+                                    let stat = fs.lstatSync(`${ProjectName}/src/pages/` + item)
+                                    if (stat.isDirectory() === true) { 
+                                        const data = fs.readFileSync(`${ProjectName}/src/pages/${item}/index.js`, 'utf8').split('\n')
+                                        data.splice(0, 0, "import 'lib-flexible/flexible.js'")
+                                        fs.writeFileSync(`${ProjectName}/src/pages/${item}/index.js`, data.join('\n'), 'utf8')
+                                    }
+                                })
                             }
                             if(fs.existsSync(`${ProjectName}/vue.config.js`)){
                                 const vueConfig = fs.readFileSync(`${ProjectName}/vue.config.js`, 'utf8').split('\n'),
@@ -104,7 +118,7 @@ let create = async (ProjectName) => {
                                             +'      }\n'
                                             +'    }\n'
                                             +'  },';
-                                vueConfig.splice(1, 0, px2rem)
+                                vueConfig.splice(answer.single == 'yes'?1:26, 0, px2rem)
                                 fs.writeFileSync(`${ProjectName}/vue.config.js`, vueConfig.join('\n'), 'utf8')
                             }
                         }

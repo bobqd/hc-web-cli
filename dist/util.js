@@ -46,6 +46,14 @@ let promptList = [{
     choices: ['vue', 'react']
 }, {
     type: 'list',
+    name: 'single',
+    message: 'project is a single page application',
+    choices: ['yes', 'no'],
+    when: function (answers) {
+        return answers.frame == 'vue';
+    }
+}, {
+    type: 'list',
     name: 'library',
     message: 'Please choose the UI library name: ',
     choices: ['ElementUI', 'iView'],
