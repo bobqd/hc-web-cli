@@ -43,7 +43,18 @@ let promptList = [{
     type: 'list',
     name: 'frame',
     message: 'please choose this project template',
-    choices: ['vue', 'react']
+    choices: ['vue', 'react', 'typeScript'],
+    when: function (answers) {
+        return answers.client == 'PC';
+    }
+}, {
+    type: 'list',
+    name: 'frame',
+    message: 'please choose this project template',
+    choices: ['vue', 'react'],
+    when: function (answers) {
+        return answers.client == 'Mobile';
+    }
 }, {
     type: 'list',
     name: 'single',
@@ -88,7 +99,10 @@ let promptList = [{
     type: 'list',
     name: 'request',
     message: 'Please choose the request method name: ',
-    choices: ['axios', 'fetch']
+    choices: ['axios', 'fetch'],
+    when: function (answers) {
+        return answers.frame == 'vue' || answers.frame == 'react';
+    }
 }, {
     type: 'input',
     name: 'description',

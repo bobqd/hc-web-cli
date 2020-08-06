@@ -49,6 +49,9 @@ let create = async ProjectName => {
                     case 'react':
                         Api = 'direct:https://github.com/bobqd/react-template.git';
                         break;
+                    case 'typeScript':
+                        Api = 'direct:https://github.com/bobqd/ts-template.git';
+                        break;
                     default:
                         break;
                 }
@@ -143,6 +146,10 @@ let create = async ProjectName => {
 
                         (0, _util.updateJsonFile)(fileName, answer).then(() => {
                             console.log(_logSymbols2.default.success, _chalk2.default.green(`配置已完成，cd ${ProjectName}，执行npm install`));
+                        });
+                    } else if (answer.frame === 'typeScript') {
+                        (0, _util.updateJsonFile)(fileName, answer).then(() => {
+                            console.log(_logSymbols2.default.success, _chalk2.default.green(`配置已完成，cd ${ProjectName}，提前安装nrm并切换公司内部源，执行npm install`));
                         });
                     }
                 }, () => {
